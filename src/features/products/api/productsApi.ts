@@ -69,7 +69,7 @@ export async function fetchProductById(
 
 export function getApiErrorMessage(error: unknown): string {
   if (error instanceof DOMException && error.name === "AbortError") {
-    return "Request was cancelled.";
+    return "Request cancelled.";
   }
 
   if (error instanceof ApiError) {

@@ -1,4 +1,4 @@
-import { readJson, removeStorageItem, writeJson } from "@/utils/browserStorage";
+import { readJson, clearStorageItem, writeJson } from "@/utils/browserStorage";
 
 export type UserSession = {
   email: string;
@@ -9,11 +9,11 @@ export type UserSession = {
 const SESSION_STORAGE_KEY = "shopsy:user-session";
 
 export function createSession(email: string): UserSession {
-  const name = email.split("@")[0].split(/[._-]/).join(" ");
+  const username = email.split("@")[0].split(/[._-]/).join(" ");
 
   return {
     email,
-    name: name || "Shopper",
+    name: username || "Shopper",
     createdAt: new Date().toISOString(),
   };
 }
@@ -27,5 +27,5 @@ export function saveSession(session: UserSession): void {
 }
 
 export function clearSession(): void {
-  removeStorageItem(SESSION_STORAGE_KEY);
+  clearStorageItem(SESSION_STORAGE_KEY);
 }

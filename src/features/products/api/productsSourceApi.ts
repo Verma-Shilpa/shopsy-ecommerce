@@ -29,10 +29,17 @@ function normalizeLimit(limit: number): number {
     return DEFAULT_PRODUCTS_LIMIT;
   }
 
-  return Math.min(
-    Math.max(Math.trunc(limit), MIN_PRODUCTS_LIMIT),
-    MAX_PRODUCTS_LIMIT,
-  );
+  const roundedLimit = Math.trunc(limit);
+
+  if (roundedLimit < MIN_PRODUCTS_LIMIT) {
+    return MIN_PRODUCTS_LIMIT;
+  }
+
+  if (roundedLimit > MAX_PRODUCTS_LIMIT) {
+    return MAX_PRODUCTS_LIMIT;
+  }
+
+  return roundedLimit;
 }
 
 async function requestSourceJson<T>(url: string): Promise<T> {

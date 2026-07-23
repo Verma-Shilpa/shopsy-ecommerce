@@ -1,5 +1,7 @@
 export function canUseStorage(): boolean {
-  return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
+  return (
+    typeof window !== "undefined" && typeof window.localStorage !== "undefined"
+  );
 }
 
 export function readJson<T>(key: string): T | null {
@@ -23,7 +25,7 @@ export function writeJson<T>(key: string, value: T): void {
   window.localStorage.setItem(key, JSON.stringify(value));
 }
 
-export function removeStorageItem(key: string): void {
+export function clearStorageItem(key: string): void {
   if (!canUseStorage()) {
     return;
   }

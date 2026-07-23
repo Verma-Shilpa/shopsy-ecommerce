@@ -8,10 +8,8 @@
   --soft-line: #e2e8f0;
   --accent: #2563eb;
   --accent-dark: #1d4ed8;
-  --accent-light: #3b82f6;
   --accent-bg: #eff6ff;
   --coral: #f97316;
-  --gold: #fbbf24;
   --warning-dark: #c2410c;
   --warning-bg: #fff7ed;
   --green: #059669;
@@ -228,17 +226,8 @@ img {
   border: 0;
 }
 
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  min-height: 26px;
-  color: var(--accent-dark);
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
 
-.login-page {
+.login-screen {
   display: grid;
   min-height: calc(100vh - var(--header-height) - 90px);
   grid-template-columns: minmax(0, 1fr) minmax(340px, 430px);
@@ -272,14 +261,14 @@ img {
 .login-card {
   display: grid;
   gap: 18px;
-  padding: clamp(22px, 4vw, 30px);
+  padding: 22px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.94);
   box-shadow: var(--shadow);
 }
 
-.login-card__header {
+.login-card_header {
   display: flex;
   gap: 14px;
   align-items: center;
@@ -295,7 +284,6 @@ img {
   letter-spacing: 0;
 }
 
-.login-card p,
 .status-panel p {
   margin: 5px 0 0;
   color: var(--muted);
@@ -437,30 +425,6 @@ img {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
-}
-
-.recent-searches {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.recent-searches span {
-  color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 800;
-}
-
-.recent-searches button {
-  min-height: 30px;
-  padding: 0 10px;
-  border: 1px solid var(--soft-line);
-  border-radius: 999px;
-  color: var(--accent-dark);
-  background: var(--accent-bg);
-  font-size: 0.82rem;
-  font-weight: 700;
 }
 
 .filter-grid {
@@ -933,7 +897,7 @@ img {
     font-size: 1.12rem;
   }
 
-  .login-page,
+  .login-screen,
   .products-hero,
   .search-row,
   .details-layout {

@@ -3,12 +3,25 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowLeft, PackageCheck, ShieldCheck, Star, Truck } from "lucide-react";
+import {
+  ArrowLeft,
+  PackageCheck,
+  ShieldCheck,
+  Star,
+  Truck,
+} from "lucide-react";
 import { StatusPanel } from "@/components/ui/StatusPanel";
-import { fetchProductById, getApiErrorMessage } from "@/features/products/api/productsApi";
+import {
+  fetchProductById,
+  getApiErrorMessage,
+} from "@/features/products/api/productsApi";
 import { useAppSelector } from "@/hooks/redux";
 import type { Product } from "@/types/product";
-import { formatCurrency, getCategoryLabel, getDiscountedPrice } from "@/utils/productUtils";
+import {
+  formatCurrency,
+  getCategoryLabel,
+  getDiscountedPrice,
+} from "@/utils/productUtils";
 
 type ProductDetailsPageProps = {
   productId: number;
@@ -18,11 +31,15 @@ type DetailStatus = "loading" | "succeeded" | "failed";
 
 export function ProductDetailsPage({ productId }: ProductDetailsPageProps) {
   const router = useRouter();
-  const cachedProduct = useAppSelector((state) => state.products.items.find((item) => item.id === productId));
+  const cachedProduct = useAppSelector((state) =>
+    state.products.items.find((item) => item.id === productId),
+  );
   const isValidProductId = Number.isFinite(productId) && productId > 0;
   const [product, setProduct] = useState<Product | null>(cachedProduct ?? null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [status, setStatus] = useState<DetailStatus>(cachedProduct ? "succeeded" : "loading");
+  const [status, setStatus] = useState<DetailStatus>(
+    cachedProduct ? "succeeded" : "loading",
+  );
   const [error, setError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -39,7 +56,10 @@ export function ProductDetailsPage({ productId }: ProductDetailsPageProps) {
         setStatus("succeeded");
       })
       .catch((requestError) => {
-        if (requestError instanceof DOMException && requestError.name === "AbortError") {
+        if (
+          requestError instanceof DOMException &&
+          requestError.name === "AbortError"
+        ) {
           return;
         }
 
@@ -55,18 +75,29 @@ export function ProductDetailsPage({ productId }: ProductDetailsPageProps) {
   }, [cachedProduct, isValidProductId, productId, reloadKey]);
 
   if (!isValidProductId) {
-    return <StatusPanel title="Product could not be loaded" message="This product id is not valid." tone="error" />;
+    return (
+      <StatusPanel
+        title="Product could not be loaded"
+        message="This product id is not valid."
+        tone="error"
+      />
+    );
   }
 
   if (status === "loading" && !product) {
-    return <StatusPanel title="Loading product" message="Fetching the latest product details." />;
+    return (
+      <StatusPanel
+        title="Loading product"
+        message="Fetching the latest product details."
+      />
+    );
   }
 
   if (status === "failed" && !product) {
     return (
       <StatusPanel
         title="Product could not be loaded"
-        message={error ?? "The product API did not return this item."}
+        message={error ?? "The product details could not be loaded."}
         actionLabel="Retry"
         onAction={handleRetry}
         tone="error"
@@ -80,7 +111,8 @@ export function ProductDetailsPage({ productId }: ProductDetailsPageProps) {
 
   const discountedPrice = getDiscountedPrice(product);
   const images = product.images.length ? product.images : [product.thumbnail];
-  const activeImage = selectedImage && images.includes(selectedImage) ? selectedImage : images[0];
+  const activeImage =
+    selectedImage && images.includes(selectedImage) ? selectedImage : images[0];
 
   function handleRetry() {
     setError(null);
@@ -90,7 +122,11 @@ export function ProductDetailsPage({ productId }: ProductDetailsPageProps) {
 
   return (
     <section className="details-page">
-      <button className="secondary-button back-button" type="button" onClick={() => router.back()}>
+      <button
+        className="secondary-button back-button"
+        type="button"
+        onClick={() => router.back()}
+      >
         <ArrowLeft size={17} aria-hidden="true" />
         Back
       </button>
@@ -104,7 +140,13 @@ export function ProductDetailsPage({ productId }: ProductDetailsPageProps) {
       <div className="details-layout">
         <div className="gallery">
           <div className="gallery-main">
-            <Image src={activeImage || product.thumbnail} alt={product.title} fill loading="eager" sizes="(max-width: 900px) 100vw, 48vw" />
+            <Image
+              src={activeImage || product.thumbnail}
+              alt={product.title}
+              fill
+              preload
+              sizes="(max-width: 900px) 100vw, 48vw"
+            />
           </div>
           <div className="gallery-thumbs" aria-label="Product images">
             {images.map((image) => (
@@ -152,12 +194,7 @@ export function ProductDetailsPage({ productId }: ProductDetailsPageProps) {
                 <dd>{product.brand}</dd>
               </>
             ) : null}
-            {product.sku ? (
-              <>
-                <dt>SKU</dt>
-                <dd>{product.sku}</dd>
-              </>
-            ) : null}
+
             <dt>Minimum order</dt>
             <dd>{product.minimumOrderQuantity ?? 1}</dd>
             <dt>Availability</dt>
@@ -181,8 +218,11 @@ export function ProductDetailsPage({ productId }: ProductDetailsPageProps) {
         <section className="reviews-section" aria-label="Customer reviews">
           <h2>Customer reviews</h2>
           <div className="review-grid">
-            {product.reviews.slice(0, 3).map((review) => (
-              <article className="review-card" key={`${review.reviewerEmail}-${review.date}`}>
+            {product.reviews?.slice(0, 2)?.map((review) => (
+              <article
+                className="review-card"
+                key={`${review.reviewerEmail}-${review.date}`}
+              >
                 <span>
                   <Star size={15} aria-hidden="true" />
                   {review.rating.toFixed(1)}

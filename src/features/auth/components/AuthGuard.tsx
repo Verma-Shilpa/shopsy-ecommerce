@@ -11,16 +11,16 @@ type AuthGuardProps = {
 };
 
 export function AuthGuard({ children }: AuthGuardProps) {
-  const { user, hydrated } = useAppSelector(selectAuth);
+  const { user, restored } = useAppSelector(selectAuth);
   const router = useRouter();
 
   useEffect(() => {
-    if (hydrated && !user) {
+    if (restored && !user) {
       router.replace("/login");
     }
-  }, [hydrated, router, user]);
+  }, [restored, router, user]);
 
-  if (!hydrated) {
+  if (!restored) {
     return (
       <StatusPanel
         title="Checking your session"
@@ -34,6 +34,8 @@ export function AuthGuard({ children }: AuthGuardProps) {
       <StatusPanel
         title="Redirecting to login"
         message="Please sign in to browse the product catalog."
+        onAction={() => router.push("/login")}
+        actionLabel="Login"
       />
     );
   }

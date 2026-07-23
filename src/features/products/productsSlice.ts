@@ -1,9 +1,20 @@
-import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { fetchProducts, getApiErrorMessage } from "@/features/products/api/productsApi";
+import {
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
+import {
+  fetchProducts,
+  getApiErrorMessage,
+} from "@/features/products/api/productsApi";
 import type { ProductPreferences } from "@/features/products/productPreferencesStorage";
 import type { RootState } from "@/store/store";
 import type { Product } from "@/types/product";
-import { defaultFilters, type ProductFilters, type ProductSort } from "@/utils/productUtils";
+import {
+  defaultFilters,
+  type ProductFilters,
+  type ProductSort,
+} from "@/utils/productUtils";
 
 type ProductsState = {
   items: Product[];
@@ -11,8 +22,7 @@ type ProductsState = {
   error: string | null;
   filters: ProductFilters;
   sort: ProductSort;
-  recentSearches: string[];
-  preferencesHydrated: boolean;
+  preferencesRestored: boolean;
 };
 
 const initialState: ProductsState = {
@@ -21,50 +31,35 @@ const initialState: ProductsState = {
   error: null,
   filters: defaultFilters,
   sort: "featured",
-  recentSearches: [],
-  preferencesHydrated: false
+  preferencesRestored: false,
 };
 
-export const loadProducts = createAsyncThunk<Product[], void, { rejectValue: string }>(
-  "products/loadProducts",
-  async (_, { signal, rejectWithValue }) => {
-    try {
-      return await fetchProducts(signal);
-    } catch (error) {
-      return rejectWithValue(getApiErrorMessage(error));
-    }
+export const loadProducts = createAsyncThunk<
+  Product[],
+  void,
+  { rejectValue: string }
+>("products/loadProducts", async (_res, { signal, rejectWithValue }) => {
+  try {
+    return await fetchProducts(signal);
+  } catch (error) {
+    return rejectWithValue(getApiErrorMessage(error));
   }
-);
-
-function addRecentSearch(current: string[], query: string): string[] {
-  const normalized = query.trim();
-
-  if (normalized.length < 2) {
-    return current;
-  }
-
-  return [normalized, ...current.filter((item) => item.toLowerCase() !== normalized.toLowerCase())].slice(0, 5);
-}
+});
 
 const productsSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
-    hydrateProductPreferences(state, action: PayloadAction<ProductPreferences>) {
+    restoreProductPreferences(
+      state,
+      action: PayloadAction<ProductPreferences>,
+    ) {
       state.filters = action.payload.filters;
       state.sort = action.payload.sort;
-      state.recentSearches = action.payload.recentSearches;
-      state.preferencesHydrated = true;
+      state.preferencesRestored = true;
     },
     setQuery(state, action: PayloadAction<string>) {
       state.filters.query = action.payload;
-    },
-    commitSearch(state) {
-      state.recentSearches = addRecentSearch(state.recentSearches, state.filters.query);
-    },
-    applyRecentSearch(state, action: PayloadAction<string>) {
-      state.filters.query = action.payload;
-      state.recentSearches = addRecentSearch(state.recentSearches, action.payload);
     },
     setCategory(state, action: PayloadAction<string>) {
       state.filters.category = action.payload;
@@ -84,7 +79,7 @@ const productsSlice = createSlice({
     resetFilters(state) {
       state.filters = defaultFilters;
       state.sort = "featured";
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -100,20 +95,18 @@ const productsSlice = createSlice({
         state.status = "failed";
         state.error = action.payload ?? "Unable to load products.";
       });
-  }
+  },
 });
 
 export const {
-  hydrateProductPreferences,
+  restoreProductPreferences,
   setQuery,
-  commitSearch,
-  applyRecentSearch,
   setCategory,
   setMinPrice,
   setMaxPrice,
   setMinRating,
   setSort,
-  resetFilters
+  resetFilters,
 } = productsSlice.actions;
 
 export const selectProductsState = (state: RootState) => state.products;

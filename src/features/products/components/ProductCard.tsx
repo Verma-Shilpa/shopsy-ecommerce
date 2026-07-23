@@ -2,25 +2,33 @@ import Image from "next/image";
 import Link from "next/link";
 import { PackageCheck, Star, Tag } from "lucide-react";
 import type { Product } from "@/types/product";
-import { formatCurrency, getCategoryLabel, getDiscountedPrice } from "@/utils/productUtils";
+import {
+  formatCurrency,
+  getCategoryLabel,
+  getDiscountedPrice,
+} from "@/utils/productUtils";
 
 type ProductCardProps = {
   product: Product;
-  eager?: boolean;
+  preload?: boolean;
 };
 
-export function ProductCard({ product, eager = false }: ProductCardProps) {
+export function ProductCard({ product, preload = false }: ProductCardProps) {
   const image = product.thumbnail || product.images[0];
   const discountedPrice = getDiscountedPrice(product);
 
   return (
     <article className="product-card">
-      <Link className="product-card__media" href={`/products/${product.id}`} aria-label={`View details for ${product.title}`}>
+      <Link
+        className="product-card__media"
+        href={`/products/${product.id}`}
+        aria-label={`View details for ${product.title}`}
+      >
         <Image
           src={image}
           alt={product.title}
           fill
-          loading={eager ? "eager" : "lazy"}
+          preload={preload}
           sizes="(max-width: 680px) 100vw, (max-width: 1100px) 50vw, 25vw"
         />
         <span className="discount-badge">
@@ -49,7 +57,9 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
             <strong>{formatCurrency(discountedPrice)}</strong>
             <del>{formatCurrency(product.price)}</del>
           </div>
-          <span className={`stock-pill ${product.stock < 20 ? "stock-pill--low" : ""}`}>
+          <span
+            className={`stock-pill ${product.stock < 10 ? "stock-pill--low" : ""}`}
+          >
             <PackageCheck size={14} aria-hidden="true" />
             {product.stock} left
           </span>

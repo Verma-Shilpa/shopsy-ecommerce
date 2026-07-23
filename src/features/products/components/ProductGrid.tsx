@@ -9,7 +9,7 @@ export function ProductGrid({ products }: ProductGridProps) {
   return (
     <section className="product-grid" aria-label="Product results">
       {products.map((product, index) => (
-        <ProductCard key={product.id} product={product} eager={index < 4} />
+        <ProductCard key={product.id} product={product} preload={index < 4} />
       ))}
     </section>
   );

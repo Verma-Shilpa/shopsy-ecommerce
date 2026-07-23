@@ -17,7 +17,7 @@ type LoginFormValues = {
 export function LoginPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { user, hydrated } = useAppSelector(selectAuth);
+  const { user, restored } = useAppSelector(selectAuth);
   const {
     register,
     handleSubmit,
@@ -32,10 +32,10 @@ export function LoginPage() {
   });
 
   useEffect(() => {
-    if (hydrated && user) {
+    if (restored && user) {
       router.replace("/products");
     }
-  }, [hydrated, router, user]);
+  }, [restored, router, user]);
 
   function onSubmit(values: LoginFormValues) {
     const session = createSession(values.email);
@@ -45,29 +45,27 @@ export function LoginPage() {
   }
 
   return (
-    <section className="login-page">
+    <section className="login-screen">
       <div className="login-copy">
-        <span className="eyebrow">Curated daily deals</span>
         <h1>Shop faster with a focused product catalog.</h1>
         <p>
-          Sign in with any valid email and a strong local password to explore
-          products, compare prices, and keep your browsing preferences on this
-          device.
+          Sign in with any valid email and a strong password to explore
+          products, compare prices, and keep browsing your preferences
         </p>
       </div>
 
       <form className="login-card" onSubmit={handleSubmit(onSubmit)} noValidate>
-        <div className="login-card__header">
+        <div className="login-card_header">
           <span className="brand-mark brand-mark--large">
             <ShoppingBag size={26} aria-hidden="true" />
           </span>
           <div>
-            <h2>Welcome to shopsy</h2>
+            <h2>Welcome to Shopsy</h2>
           </div>
         </div>
 
         <label className="field" htmlFor="email">
-          <span>Email address</span>
+          <span>Email</span>
           <span
             className={`input-shell ${errors.email ? "input-shell--error" : ""}`}
           >
@@ -76,7 +74,7 @@ export function LoginPage() {
               id="email"
               type="email"
               autoComplete="email"
-              placeholder="you@example.com"
+              placeholder="Enter your email"
               {...register("email", {
                 required: "Email is required.",
                 pattern: {
@@ -120,7 +118,7 @@ export function LoginPage() {
 
         <label className="check-row">
           <input type="checkbox" {...register("remember")} />
-          <span>Keep this browser signed in</span>
+          <span>Remember me</span>
         </label>
 
         <button
@@ -129,7 +127,7 @@ export function LoginPage() {
           disabled={isSubmitting}
         >
           <LockKeyhole size={18} aria-hidden="true" />
-          {isSubmitting ? "Signing in" : "Sign in"}
+          {isSubmitting ? "Signing in..." : "Sign in"}
         </button>
       </form>
     </section>
