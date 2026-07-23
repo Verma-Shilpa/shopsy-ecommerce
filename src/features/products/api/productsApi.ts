@@ -46,10 +46,12 @@ async function requestJson<T>(url: string, signal?: AbortSignal): Promise<T> {
   }
 }
 
-async function getResponseErrorMessage(response: Response): Promise<string | null> {
+async function getResponseErrorMessage(
+  response: Response,
+): Promise<string | null> {
   try {
-    const body = (await response.json()) as { message?: unknown };
-    return typeof body.message === "string" ? body.message : null;
+    const res = await response.json();
+    return typeof res.message === "string" ? res.message : null;
   } catch {
     return null;
   }
