@@ -12,11 +12,7 @@ export class ApiError extends Error {
   }
 }
 
-function getProductsEndpoint(): string {
-  return PRODUCTS_API_ROUTE;
-}
-
-async function requestJson<T>(url: string, signal?: AbortSignal): Promise<T> {
+async function fetchJson<T>(url: string, signal?: AbortSignal): Promise<T> {
   try {
     const response = await fetch(url, { signal });
 
@@ -32,11 +28,10 @@ async function requestJson<T>(url: string, signal?: AbortSignal): Promise<T> {
 
     return (await response.json()) as T;
   } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-
-    if (error instanceof DOMException && error.name === "AbortError") {
+    if (
+      error instanceof ApiError ||
+      (error instanceof DOMException && error.name === "AbortError")
+    ) {
       throw error;
     }
 
@@ -58,8 +53,8 @@ async function getResponseErrorMessage(
 }
 
 export async function fetchProducts(signal?: AbortSignal): Promise<Product[]> {
-  const data = await requestJson<ProductsResponse>(
-    `${getProductsEndpoint()}?limit=100`,
+  const data = await fetchJson<ProductsResponse>(
+    `${PRODUCTS_API_ROUTE}?limit=100`,
     signal,
   );
   return data.products;
@@ -69,7 +64,7 @@ export async function fetchProductById(
   id: number,
   signal?: AbortSignal,
 ): Promise<Product> {
-  return requestJson<Product>(`${getProductsEndpoint()}/${id}`, signal);
+  return fetchJson<Product>(`${PRODUCTS_API_ROUTE}/${id}`, signal);
 }
 
 export function getApiErrorMessage(error: unknown): string {

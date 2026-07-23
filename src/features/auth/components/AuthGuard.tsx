@@ -21,11 +21,21 @@ export function AuthGuard({ children }: AuthGuardProps) {
   }, [hydrated, router, user]);
 
   if (!hydrated) {
-    return <StatusPanel title="Checking your session" message="Preparing your shopping workspace." />;
+    return (
+      <StatusPanel
+        title="Checking your session"
+        message="Preparing your shopping experience."
+      />
+    );
   }
 
   if (!user) {
-    return <StatusPanel title="Redirecting to login" message="Please sign in to browse the product catalog." />;
+    return (
+      <StatusPanel
+        title="Redirecting to login"
+        message="Please sign in to browse the product catalog."
+      />
+    );
   }
 
   return <>{children}</>;

@@ -9,22 +9,17 @@ export type UserSession = {
 const SESSION_STORAGE_KEY = "shopsy:user-session";
 
 export function createSession(email: string): UserSession {
-  const name = email
-    .split("@")[0]
-    .split(/[._-]/)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
+  const name = email.split("@")[0].split(/[._-]/).join(" ");
 
   return {
     email,
     name: name || "Shopper",
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   };
 }
 
 export function readSession(): UserSession | null {
-  return readJson<UserSession>(SESSION_STORAGE_KEY);
+  return readJson(SESSION_STORAGE_KEY);
 }
 
 export function saveSession(session: UserSession): void {
